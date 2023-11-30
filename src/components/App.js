@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import DuckList from './DuckList'
 import DuckDisplay from "./DuckDisplay"
 import DuckForm from "./DuckForm"
@@ -8,20 +8,44 @@ function App() {
   const [ducks, setDucks] = useState([])
   const [featuredDuck, setFeaturedDuck] = useState({})
   const [duckFormOpen, setDuckFormOpen] = useState(true)
+ 
+  useEffect(() => {
+    fetch('http://localhost:4001/ducks')
+    .then(res => res.json())
+    .then(data => setDucks(data))
+  }, [featuredDuck])
+
+
+  function displayFeatureDuck(selectedDuck) {
+    setFeaturedDuck(selectedDuck)
+  }
+
+  function showForm() {
+    console.log('click');
+    setDuckFormOpen(!duckFormOpen)
+  }
+
+  function handleNewDuck(duckInput) {
+    setDucks([...ducks, duckInput])
+
+  }
 
   return (
     <div className="App">
 
       <h1>Duck Manager 2022 - React Edition</h1>
 
-      <DuckList />
+      <DuckList ducks={ducks} displayFeatureDuck={displayFeatureDuck} />
 
-      <DuckDisplay />
+      <DuckDisplay featuredDuck={featuredDuck} />
+      
+      { duckFormOpen ? 
+      <button onClick={showForm}>Open Duck Form</button> 
+      : <button onClick={showForm}>Close Duck Form</button> }
+    
 
-      <button>Open Duck Form</button>
-
-      {/* Conditionally display the duck form on the line below depending on whether the duckFormOpen state is true or false... */}
-      <DuckForm />
+      {duckFormOpen ? null : <DuckForm handleNewDuck={handleNewDuck} />}
+      
 
     </div>
   );
