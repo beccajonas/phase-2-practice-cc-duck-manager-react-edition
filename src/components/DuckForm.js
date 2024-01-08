@@ -1,56 +1,35 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 
-function DuckForm({ handleNewDuck }) {
+function DuckForm({postNewDuck}) {
 
   const [name, setName] = useState('')
   const [image, setImage] = useState('')
 
-  function handleName(e) {
-    setName(e.target.value)
+  function handleNameChange(event) {
+    setName(event.target.value)
   }
 
-  function handleImage(e) {
-    setImage(e.target.value)
+  function handleImageChange(event) {
+    setImage(event.target.value)
   }
 
-  function handleSubmit(e) {
-    e.preventDefault()
-    
-    const newDuck = {
-      name,
-      image,
-      likes: 0
-    }
-
-    fetch('http://localhost:4001/ducks', {
-      method: "POST",
-      headers: {
-        "content-type" : "application/json"
-      },
-      body: JSON.stringify(newDuck)
-    })
-    .then(res => res.json())
-    .then(data => handleNewDuck(data))
-
+  function handleSubmit(event) {
+    event.preventDefault()
+    postNewDuck({name: name, img_url: image, likes: 0})
+    // id gets added by the json-server so we don't include it
   }
 
   return (
-    <form onSubmit={handleSubmit} id="new-duck-form">
+    <form id="new-duck-form" onSubmit={handleSubmit}>
+
        <label htmlFor="duck-name-input">New Duck Name:</label>
-       <input 
-          type="text" 
-          name="duck-name-input"
-          onChange={handleName}
-          value={name} />
+       <input type="text" name="duck-name-input" value={name} onChange={handleNameChange} />
 
        <label htmlFor="duck-image-input">New Duck Image URL:</label>
-       <input 
-       type="text" 
-       name="duck-image-input"
-       onChange={handleImage}
-       value={image} />
+       <input type="text" name="duck-image-input" value={image} onChange={handleImageChange} />
 
        <input type="submit" value="Create Duck" />
+
     </form>
   )
 }

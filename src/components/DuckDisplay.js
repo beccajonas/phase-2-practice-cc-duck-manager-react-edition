@@ -1,18 +1,17 @@
-import React, {useEffect, useState} from 'react'
+import React, { useState, useEffect } from 'react'
 
-function DuckDisplay({ featuredDuck }) {
+function DuckDisplay({featuredDuck}) {
 
-  const {img_url, name, id, likes} = featuredDuck
-  const [currentLikes, setCurrentLikes] = useState(likes)
-      
+  const [currentLikes, setCurrentLikes] = useState(featuredDuck.likes)
+
   useEffect(() => {
-    setCurrentLikes(likes)
+    setCurrentLikes(featuredDuck.likes)
   }, [featuredDuck])
 
   function handleIncrementLikes() {
     setCurrentLikes(currentLikes + 1)
 
-  fetch(`http://localhost:4001/ducks/${id}`, {
+    fetch(`http://localhost:4001/ducks/${featuredDuck.id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'
@@ -21,22 +20,19 @@ function DuckDisplay({ featuredDuck }) {
     })
   }
 
-    return (
-      <div className="duck-display">
-        {/* show all the details for the featuredDuck state here */}
-        <h2>{name}</h2>
-        <img src={img_url} alt={name} />
-  
-        <button onClick={handleIncrementLikes} >{currentLikes} likes</button>
-  
-      </div>
-    )
-  }
-  
-  export default DuckDisplay
-  
-  
+  return (
+    <div className="duck-display">
 
+      {/* show all the details for the featuredDuck state here */}
 
+      <h2>{featuredDuck.name}</h2>
 
+      <img src={featuredDuck.img_url} alt={featuredDuck.name} />
 
+      <button onClick={() => handleIncrementLikes()} >{currentLikes} likes</button>
+
+    </div>
+  )
+}
+
+export default DuckDisplay

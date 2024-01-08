@@ -8,44 +8,50 @@ function App() {
   const [ducks, setDucks] = useState([])
   const [featuredDuck, setFeaturedDuck] = useState({})
   const [duckFormOpen, setDuckFormOpen] = useState(true)
- 
-  useEffect(() => {
-    fetch('http://localhost:4001/ducks')
-    .then(res => res.json())
-    .then(data => setDucks(data))
-  }, [featuredDuck])
 
-
-  function displayFeatureDuck(selectedDuck) {
-    setFeaturedDuck(selectedDuck)
+  function handleClickDuck(duck) {
+    setFeaturedDuck(duck)
   }
 
-  function showForm() {
-    console.log('click');
+  function handleClickForm() {
     setDuckFormOpen(!duckFormOpen)
   }
 
-  function handleNewDuck(duckInput) {
-    setDucks([...ducks, duckInput])
-
+  function postNewDuck(newDuck) {
+    fetch('http://localhost:4001/ducks', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(newDuck)
+    })
+    .then(res => res.json())
+    .then(newDuckFromServer => setDucks([...ducks, newDuckFromServer]))
   }
+
+  useEffect(() => {
+    fetch('http://localhost:3000/ducks')
+    .then(res => res.json())
+    .then(data => setDucks(data))
+  }, [])
+
+  useEffect(() => {
+    console.log('duckFormOpen Has Changed!')
+    // this is just for demonstration purposes
+  }, [duckFormOpen])
 
   return (
     <div className="App">
 
       <h1>Duck Manager 2022 - React Edition</h1>
 
-      <DuckList ducks={ducks} displayFeatureDuck={displayFeatureDuck} />
+      <DuckList ducks={ducks} handleClickDuck={handleClickDuck} />
 
       <DuckDisplay featuredDuck={featuredDuck} />
-      
-      { duckFormOpen ? 
-      <button onClick={showForm}>Open Duck Form</button> 
-      : <button onClick={showForm}>Close Duck Form</button> }
-    
 
-      {duckFormOpen ? null : <DuckForm handleNewDuck={handleNewDuck} />}
-      
+      <button onClick={() => handleClickForm()}>{duckFormOpen ? "Close" : "Open" } Duck Form</button>
+
+      { duckFormOpen ? <DuckForm postNewDuck={postNewDuck} /> : null }
 
     </div>
   );

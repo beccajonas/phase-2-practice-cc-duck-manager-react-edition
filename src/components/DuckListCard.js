@@ -1,16 +1,6 @@
-function DuckListCard({duck, displayFeatureDuck}) {
-  const {img_url, name} = duck
-
-  function handleClick() {
-    displayFeatureDuck(duck);
-  }
-
+function DuckListCard({duck, handleClickDuck}) {
   return (
-    <img
-      onClick={handleClick} 
-      src={img_url} 
-      alt={name} 
-    />
+    <img onClick={() => handleClickDuck(duck)} src={duck.img_url} alt={duck.name} />
   )
 }
 
